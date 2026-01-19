@@ -1,0 +1,191 @@
+  <pre><code>&lt;!-- Tailwind CSS for styling --&gt;  
+&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;  
+  
+&lt;!-- Meta tags for "App-like" behavior on mobile --&gt;  
+&lt;meta name="mobile-web-app-capable" content="yes"&gt;  
+&lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;  
+&lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;  
+&lt;meta name="theme-color" content="#2563eb"&gt;  
+&lt;link rel="icon" type="image/png" href="https://lucide.dev/favicon.ico"&gt;  
+
+&lt;!-- Icons --&gt;  
+&lt;script src="https://unpkg.com/lucide@latest"&gt;&lt;/script&gt;  
+
+&lt;style&gt;  
+    /* Custom styles to prevent selecting text like in a native app */  
+    body {  
+        -webkit-user-select: none;  
+        user-select: none;  
+        -webkit-tap-highlight-color: transparent;  
+    }  
+    input {  
+        -webkit-user-select: text;  
+        user-select: text;  
+    }  
+&lt;/style&gt;  
+</code></pre>
+
+
+  <pre><code>&lt;!-- App Header --&gt;  
+&lt;div class="bg-blue-600 text-white p-4 shadow-lg sticky top-0 z-10 safe-area-top"&gt;  
+    &lt;div class="flex items-center justify-between max-w-md mx-auto"&gt;  
+        &lt;div class="flex items-center space-x-2"&gt;  
+            &lt;i data-lucide="calculator" class="w-6 h-6"&gt;&lt;/i&gt;  
+            &lt;h1 class="text-xl font-bold tracking-tight"&gt;ATD Calculator&lt;/h1&gt;  
+        &lt;/div&gt;  
+        &lt;span class="text-xs bg-blue-700 px-2 py-1 rounded"&gt;3-Pulley Modified&lt;/span&gt;  
+    &lt;/div&gt;  
+&lt;/div&gt;  
+
+&lt;!-- Main Content --&gt;  
+&lt;main class="flex-grow p-4 max-w-md mx-auto w-full space-y-4"&gt;  
+
+    &lt;!-- Input Section --&gt;  
+    &lt;div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4"&gt;  
+        &lt;h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2"&gt;Parameters&lt;/h2&gt;  
+          
+        &lt;!-- Length Input --&gt;  
+        &lt;div class="space-y-1"&gt;  
+            &lt;label for="length" class="block text-sm font-medium text-slate-700"&gt;Half Tension Length (m)&lt;/label&gt;  
+            &lt;div class="relative"&gt;  
+                &lt;input type="number" id="length" step="0.01" placeholder="e.g. 750"   
+                    class="block w-full rounded-xl border-slate-300 bg-slate-50 border p-3 pl-10 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm text-lg"  
+                    oninput="checkInputs()"&gt;  
+                &lt;div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"&gt;  
+                    &lt;i data-lucide="ruler" class="h-5 w-5 text-slate-400"&gt;&lt;/i&gt;  
+                &lt;/div&gt;  
+            &lt;/div&gt;  
+        &lt;/div&gt;  
+
+        &lt;!-- Temperature Input --&gt;  
+        &lt;div class="space-y-1"&gt;  
+            &lt;label for="temperature" class="block text-sm font-medium text-slate-700"&gt;Temperature (°C)&lt;/label&gt;  
+            &lt;div class="relative"&gt;  
+                &lt;input type="number" id="temperature" step="0.1" placeholder="e.g. 35"   
+                    class="block w-full rounded-xl border-slate-300 bg-slate-50 border p-3 pl-10 focus:border-blue-500 focus:ring-blue-500 transition-colors shadow-sm text-lg"  
+                    oninput="checkInputs()"&gt;  
+                &lt;div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"&gt;  
+                    &lt;i data-lucide="thermometer" class="h-5 w-5 text-slate-400"&gt;&lt;/i&gt;  
+                &lt;/div&gt;  
+            &lt;/div&gt;  
+        &lt;/div&gt;  
+
+        &lt;!-- Calculate Button --&gt;  
+        &lt;button onclick="calculate()" id="calcBtn"  
+            class="w-full bg-blue-600 active:bg-blue-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transform active:scale-[0.98] transition-all flex items-center justify-center space-x-2 mt-4"&gt;  
+            &lt;i data-lucide="check-circle" class="w-5 h-5"&gt;&lt;/i&gt;  
+            &lt;span&gt;Calculate Dimensions&lt;/span&gt;  
+        &lt;/button&gt;  
+    &lt;/div&gt;  
+
+    &lt;!-- Results Section (Hidden by default) --&gt;  
+    &lt;div id="results" class="hidden bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"&gt;  
+        &lt;div class="bg-slate-50 px-5 py-3 border-b border-slate-200 flex justify-between items-center"&gt;  
+            &lt;h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider"&gt;Results&lt;/h2&gt;  
+            &lt;button onclick="clearForm()" class="text-xs text-blue-600 font-medium hover:text-blue-800"&gt;Clear&lt;/button&gt;  
+        &lt;/div&gt;  
+          
+        &lt;div class="p-5 grid grid-cols-1 gap-6"&gt;  
+              
+            &lt;!-- X Value Card --&gt;  
+            &lt;div class="bg-blue-50 rounded-xl p-4 border border-blue-100 relative overflow-hidden"&gt;  
+                &lt;div class="absolute right-0 top-0 p-2 opacity-10"&gt;  
+                    &lt;span class="text-6xl font-bold text-blue-900"&gt;X&lt;/span&gt;  
+                &lt;/div&gt;  
+                &lt;h3 class="text-blue-800 font-bold text-lg mb-1"&gt;X-Dimension&lt;/h3&gt;  
+                &lt;div class="flex items-baseline space-x-2"&gt;  
+                    &lt;span id="resX_mm" class="text-3xl font-bold text-blue-900"&gt;0.00&lt;/span&gt;  
+                    &lt;span class="text-sm text-blue-700 font-medium"&gt;mm&lt;/span&gt;  
+                &lt;/div&gt;  
+                &lt;div class="text-sm text-blue-600 mt-1"&gt;  
+                    &lt;span id="resX_m"&gt;0.0000&lt;/span&gt; meters  
+                &lt;/div&gt;  
+            &lt;/div&gt;  
+
+            &lt;!-- Y Value Card --&gt;  
+            &lt;div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100 relative overflow-hidden"&gt;  
+                &lt;div class="absolute right-0 top-0 p-2 opacity-10"&gt;  
+                    &lt;span class="text-6xl font-bold text-indigo-900"&gt;Y&lt;/span&gt;  
+                &lt;/div&gt;  
+                &lt;h3 class="text-indigo-800 font-bold text-lg mb-1"&gt;Y-Dimension&lt;/h3&gt;  
+                &lt;div class="flex items-baseline space-x-2"&gt;  
+                    &lt;span id="resY_mm" class="text-3xl font-bold text-indigo-900"&gt;0.00&lt;/span&gt;  
+                    &lt;span class="text-sm text-indigo-700 font-medium"&gt;mm&lt;/span&gt;  
+                &lt;/div&gt;  
+                &lt;div class="text-sm text-indigo-600 mt-1"&gt;  
+                    &lt;span id="resY_m"&gt;0.0000&lt;/span&gt; meters  
+                &lt;/div&gt;  
+            &lt;/div&gt;  
+
+        &lt;/div&gt;  
+    &lt;/div&gt;  
+
+&lt;/main&gt;  
+
+&lt;!-- Footer / Install Hint --&gt;  
+&lt;footer class="p-4 text-center text-slate-400 text-xs pb-8 safe-area-bottom"&gt;  
+    &lt;p class="mb-2"&gt;Formula: 1300/2300 + (L × 1.7e-5 × ΔT)&lt;/p&gt;  
+    &lt;p&gt;Use "Add to Home Screen" to install as App&lt;/p&gt;  
+&lt;/footer&gt;  
+
+&lt;script&gt;  
+    // Initialize Icons  
+    lucide.createIcons();  
+
+    function checkInputs() {  
+        // Optional: Enable/Disable button based on input validity  
+    }  
+
+    function calculate() {  
+        // Get inputs  
+        const lengthInput = document.getElementById("length");  
+        const tempInput = document.getElementById("temperature");  
+          
+        const L = parseFloat(lengthInput.value);  
+        const T = parseFloat(tempInput.value);  
+
+        // Validation  
+        if (isNaN(L) || isNaN(T)) {  
+            alert("Please enter valid numbers for both Length and Temperature.");  
+            return;  
+        }  
+
+        // Calculation Logic (From user snippet)  
+        // valX = 1300 + (L * 0.000017 * (35 - T) * 1000);  
+        // The user had * 1000 inside the parenthesis.   
+        // 0.000017 is likely coefficient. 1000 converts m to mm.  
+          
+        const expansionFactor = L * 0.000017 * (35 - T) * 1000;  
+          
+        const valX = 1300 + expansionFactor;  
+        const valY = 2300 + 3 * expansionFactor;  
+
+        // Update DOM  
+        document.getElementById("resX_mm").textContent = valX.toFixed(2);  
+        document.getElementById("resX_m").textContent = (valX / 1000).toFixed(4);  
+          
+        document.getElementById("resY_mm").textContent = valY.toFixed(2);  
+        document.getElementById("resY_m").textContent = (valY / 1000).toFixed(4);  
+
+        // Show results with animation  
+        const resultsDiv = document.getElementById("results");  
+        resultsDiv.classList.remove("hidden");  
+          
+        // Smooth scroll to results on small screens  
+        if(window.innerWidth &lt; 768) {  
+            setTimeout(() =&gt; {  
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });  
+            }, 100);  
+        }  
+    }  
+
+    function clearForm() {  
+        document.getElementById("length").value = "";  
+        document.getElementById("temperature").value = "";  
+        document.getElementById("results").classList.add("hidden");  
+    }  
+&lt;/script&gt;  
+</code></pre>
+
+
+  <p>Made by Abhishek Pandey </p>
